@@ -1,4 +1,7 @@
 
+# Language
+English | [中文](./READMEzh.md) 
+
 # Meteor Villager Roller
 
 ![checks](https://github.com/maxsupermanhd/meteor-villager-roller/actions/workflows/checks.yml/badge.svg)
