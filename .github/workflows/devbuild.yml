@@ -1,4 +1,4 @@
-name: devbuild
+name: 开发构建
 on:
   - push
 jobs:
@@ -16,12 +16,13 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew build
-      - name: Create Dev Build release
-        uses: marvinpinto/action-automatic-releases@latest
+
+      - name: 自动释放1
+        uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          automatic_release_tag: latest
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
           prerelease: true
-          title: Dev Build
+          title: 开发建设
           files: |
             ./build/libs/*.jar
