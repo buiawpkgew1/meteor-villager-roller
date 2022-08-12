@@ -55,54 +55,54 @@ public class VillagerRoller extends Module {
     private final SettingGroup sgSound = settings.createGroup("Sound");
 
     private final Setting<Boolean> disableIfFound = sgGeneral.add(new BoolSetting.Builder()
-            .name("disable-when-found")
-            .description("Disable enchantment from list if found")
+            .name("发现时禁用")
+            .description("如果找到，则从列表中禁用附魔")
             .defaultValue(true)
             .build());
 
     private final Setting<Boolean> saveListToConfig = sgGeneral.add(new BoolSetting.Builder()
-        .name("save-list-to-config")
-        .description("Toggles saving and loading of rolling list to config and copypaste buffer")
+        .name("保存列表到配置")
+        .description("切换滚动列表的保存和加载以配置和复制粘贴缓冲区")
         .defaultValue(true)
         .build());
 
     private final Setting<Boolean> enablePlaySound = sgGeneral.add(new BoolSetting.Builder()
-            .name("enable-sound")
-            .description("Plays sound when it finds desired trade")
+            .name("启用声音")
+            .description("找到所需交易时播放声音")
             .defaultValue(true)
             .build());
 
     private final Setting<List<SoundEvent>> sound = sgSound.add(new SoundEventListSetting.Builder()
-            .name("sound-to-play")
-            .description("Sound that will be played when desired trade is found if enabled")
+            .name("声音播放")
+            .description("如果启用，则在找到所需交易时播放的声音")
             .defaultValue(Collections.singletonList(BLOCK_AMETHYST_CLUSTER_BREAK))
             .build());
 
     private final Setting<Double> soundPitch = sgSound.add(new DoubleSetting.Builder()
-            .name("sound-pitch")
-            .description("Playing sound pitch")
+            .name("音高")
+            .description("播放音高")
             .defaultValue(1.0)
             .min(0)
             .sliderRange(0, 8)
             .build());
 
     private final Setting<Double> soundVolume = sgSound.add(new DoubleSetting.Builder()
-            .name("sound-volume")
-            .description("Playing sound volume")
+            .name("音量")
+            .description("播放音量")
             .defaultValue(1.0)
             .min(0)
             .sliderRange(0, 1)
             .build());
 
     private final Setting<Boolean> pauseOnScreen = sgGeneral.add(new BoolSetting.Builder()
-            .name("pause-on-screens")
-            .description("Pauses rolling if any screen is open")
+            .name("屏幕暂停")
+            .description("如果任何屏幕打开，则暂停滚动")
             .defaultValue(true)
             .build());
 
     private final Setting<Boolean> headRotateOnPlace = sgGeneral.add(new BoolSetting.Builder()
-            .name("rotate-place")
-            .description("Look to the block while placing it?")
+            .name("旋转位置")
+            .description("放置方块时看向方块?")
             .defaultValue(true)
             .build());
 
@@ -125,19 +125,19 @@ public class VillagerRoller extends Module {
     public List<rollingEnchantment> searchingEnchants = new ArrayList<>();
 
     public VillagerRoller() {
-        super(Categories.Misc, "villager-roller", "Rolls trades.");
+        super(Categories.Misc, "村民滚子", "Rolls trades.");
     }
 
     @Override
     public void onActivate() {
         currentState = State.WaitingForTargetBlock;
-        info("Attack block you want to roll");
+        info("你想滚动的攻击块");
     }
 
     @Override
     public void onDeactivate() {
         currentState = State.Disabled;
-        info("Roller disabled.");
+        info("滚筒禁用.");
     }
 
     @Override
@@ -166,7 +166,7 @@ public class VillagerRoller extends Module {
             searchingEnchants.clear();
             for (NbtElement e : l) {
                 if (e.getType() != NbtElement.COMPOUND_TYPE) {
-                    info("Invalid list element");
+                    info("无效的列表元素");
                     continue;
                 }
                 searchingEnchants.add(new rollingEnchantment().fromTag((NbtCompound) e));
@@ -177,7 +177,7 @@ public class VillagerRoller extends Module {
 
     public boolean loadSearchingFromFile(File f) {
         if (!f.exists() || !f.canRead()) {
-            info("File does not exist or can not be loaded");
+            info("文件不存在或无法加载");
             return false;
         }
         NbtCompound r = null;
@@ -187,14 +187,14 @@ public class VillagerRoller extends Module {
             e.printStackTrace();
         }
         if (r == null) {
-            info("Failed to load nbt from file");
+            info("从文件中加载nbt失败");
             return false;
         }
         NbtList l = r.getList("rolling", NbtElement.COMPOUND_TYPE);
         searchingEnchants.clear();
         for (NbtElement e : l) {
             if (e.getType() != NbtElement.COMPOUND_TYPE) {
-                info("Invalid list element");
+                info("无效的列表元素");
                 return false;
             }
             searchingEnchants.add(new rollingEnchantment().fromTag((NbtCompound) e));
@@ -227,17 +227,17 @@ public class VillagerRoller extends Module {
     }
 
     private void fillWidget(GuiTheme theme, WVerticalList list) {
-        WSection loadDataSection = list.add(theme.section("Config Saving")).expandX().widget();
+        WSection loadDataSection = list.add(theme.section("配置保存")).expandX().widget();
 
         WTable control = loadDataSection.add(theme.table()).expandX().widget();
 
-        WTextBox nfname = control.add(theme.textBox("default")).expandWidgetX().expandCellX().expandX().widget();
-        WButton save = control.add(theme.button("Save")).expandX().widget();
+        WTextBox nfname = control.add(theme.textBox("默认")).expandWidgetX().expandCellX().expandX().widget();
+        WButton save = control.add(theme.button("保存")).expandX().widget();
         save.action = () -> {
             if (saveSearchingToFile(new File(new File(MeteorClient.FOLDER, "VillagerRoller"), nfname.get()+".nbt"))) {
-                info("Saved successfully");
+                info("成功保存");
             } else {
-                info("Save failed");
+                info("保存失败");
             }
             list.clear();
             fillWidget(theme, list);
@@ -248,7 +248,7 @@ public class VillagerRoller extends Module {
         var path = MeteorClient.FOLDER.toPath().resolve("VillagerRoller");
         if(Files.notExists(path)) {
             if(!path.toFile().mkdirs()) {
-                error("Failed to create directory [{}]", path);
+                error("创建目录 [{}] 失败", path);
             }
         } else {
             try (var l = Files.list(path)) {
@@ -257,7 +257,7 @@ public class VillagerRoller extends Module {
                     fnames.add(name.substring(0, name.length() - 4));
                 });
             } catch(IOException e) {
-                error("Failed to list directory", e);
+                error("列出目录失败", e);
             }
         }
         if (fnames.size() != 0) {
@@ -269,7 +269,7 @@ public class VillagerRoller extends Module {
                     list.clear();
                     fillWidget(theme, list);
                 } else {
-                    error("Failed to load file.");
+                    error("加载文件失败.");
                 }
             };
         }
@@ -302,19 +302,19 @@ public class VillagerRoller extends Module {
             WIntEdit lev = table.add(theme.intEdit(e.minLevel, 0, e.enchantment.getMaxLevel(), true)).minWidth(40)
                     .expandX().widget();
             lev.action = () -> e.minLevel = lev.get();
-            lev.tooltip = "Minimum enchantment level, 0 acts as maximum possible only";
+            lev.tooltip = "最小的魔法等级，0只作为最大的可能。";
 
             var costbox = table.add(theme.horizontalList()).minWidth(50).expandX().widget();
             WIntEdit cost = costbox.add(theme.intEdit(e.maxCost, 0, 64, false)).minWidth(40).expandX().widget();
             cost.action = () -> e.maxCost = cost.get();
-            cost.tooltip = "Maximum cost in emeralds, 0 means no limit";
+            cost.tooltip = "以绿宝石为单位的最大成本，0意味着没有限制";
             var setOptimal = costbox.add(theme.button("O")).widget();
-            setOptimal.tooltip = "Set to optimal price (5 + minLevel*3) (double if treasure)";
+            setOptimal.tooltip = "设置为最佳价格（5+minLevel*3）（如果是宝藏，则为双倍）。";
             setOptimal.action = () -> e.maxCost = getMinimumPrice(e.enchantment, e.enchantment.getMaxLevel());
 
             WCheckbox en = table.add(theme.checkbox(e.enabled)).widget();
             en.action = () -> e.enabled = en.checked;
-            en.tooltip = "Enabled?";
+            en.tooltip = "已启用?";
 
             WMinus del = table.add(theme.minus()).widget();
             del.action = () -> {
@@ -327,21 +327,21 @@ public class VillagerRoller extends Module {
 
         WHorizontalList bottomControls = enchantments.add(theme.horizontalList()).expandX().widget();
 
-        WButton removeAll = bottomControls.add(theme.button("Remove all")).expandX().widget();
+        WButton removeAll = bottomControls.add(theme.button("移除所有")).expandX().widget();
         removeAll.action = () -> {
             list.clear();
             searchingEnchants.clear();
             fillWidget(theme, list);
         };
 
-        WButton create = bottomControls.add(theme.button("Add")).expandX().widget();
+        WButton create = bottomControls.add(theme.button("添加")).expandX().widget();
         create.action = () -> mc.setScreen(new EnchantmentSelectScreen(theme, (e) -> {
             searchingEnchants.add(new rollingEnchantment(e, e.getMaxLevel(), getMinimumPrice(e, e.getMaxLevel()), true));
             list.clear();
             fillWidget(theme, list);
         }));
 
-        WButton addAll = bottomControls.add(theme.button("Add all")).expandX().widget();
+        WButton addAll = bottomControls.add(theme.button("添加所有")).expandX().widget();
         addAll.action = () -> {
             list.clear();
             searchingEnchants.clear();
@@ -370,7 +370,7 @@ public class VillagerRoller extends Module {
         private final EnchantmentSelectCallback callback;
 
         public EnchantmentSelectScreen(GuiTheme theme1, EnchantmentSelectCallback callback1) {
-            super(theme1, "Select enchantment");
+            super(theme1, "选择附魔📕");
             this.theme = theme1;
             this.callback = callback1;
         }
@@ -380,7 +380,7 @@ public class VillagerRoller extends Module {
             WTable table = add(theme.table()).widget();
             for (Enchantment e : available.stream().sorted((o1, o2) -> Names.get(o1).compareToIgnoreCase(Names.get(o2))).toList()) {
                 table.add(theme.label(Names.get(e))).expandCellX();
-                WButton a = table.add(theme.button("Select")).widget();
+                WButton a = table.add(theme.button("选择✔")).widget();
                 a.action = () -> {
                     callback.Selection(e);
                     close();
@@ -393,7 +393,7 @@ public class VillagerRoller extends Module {
 
     public void triggerInteract() {
         if (pauseOnScreen.get() && mc.currentScreen != null) {
-            info("Rolling paused, interact with villager to continue");
+            info("滚动暂停，与村民互动继续");
         } else {
             assert mc.interactionManager != null;
             mc.interactionManager.interactEntity(mc.player, rollingVillager, Hand.MAIN_HAND);
@@ -418,20 +418,20 @@ public class VillagerRoller extends Module {
                     found = true;
                     if (e.minLevel <= 0) {
                         if (enchant.getValue() != e.enchantment.getMaxLevel()) {
-                            info(String.format("Found enchant %s but it is not max level: %d (max) > %d (found)",
+                            info(String.format("找到附魔 %s 但不是最高等级：%d (max) > %d (found)",
                                     Names.get(e.enchantment), e.enchantment.getMaxLevel(), enchant.getValue()));
                             continue;
                         }
                     } else {
                         if (e.minLevel > enchant.getValue()) {
                             info(String.format(
-                                    "Found enchant %s but it has too low level: %d (requested level) > %d (rolled level)",
+                                    "找到附魔 %s，但它的等级太低：%d (请求等级) > %d (滚动等级)",
                                     Names.get(e.enchantment), e.minLevel, enchant.getValue()));
                             continue;
                         }
                     }
                     if (e.maxCost > 0 && offer.getOriginalFirstBuyItem().getCount() > e.maxCost) {
-                        info(String.format("Found enchant %s but it costs too much: %s (max price) < %d (cost)",
+                        info(String.format("找到了 %s 的附魔，但它的成本太高：%s（最高价格）< %d（成本）",
                                 Names.get(e.enchantment),
                                 e.maxCost, offer.getOriginalFirstBuyItem().getCount()));
                         continue;
@@ -447,7 +447,7 @@ public class VillagerRoller extends Module {
                     break;
                 }
                 if (!found) {
-                    info(String.format("Found enchant %s but it is not in the list.", Names.get(enchant.getKey()))); // StringHelper.stripTextFormat(new
+                    info(String.format("找到附魔 %s 但它不在列表中.", Names.get(enchant.getKey()))); // StringHelper.stripTextFormat(new
                                                                                                                      // TranslatableText(enchant.getKey().getTranslationKey()).getString()),
                                                                                                                      // enchant.getValue().toString()));
                 }
@@ -466,7 +466,7 @@ public class VillagerRoller extends Module {
             assert mc.world != null;
             rollingBlock = mc.world.getBlockState(rollingBlockPos).getBlock();
             currentState = State.WaitingForTargetVillager;
-            info("Rolling block selected, now interact with villager you want to roll");
+            info("选择滚动块，现在与您想要滚动的村民互动");
 //            event.cancel(); //Dirty hack
         }
     }
@@ -480,7 +480,7 @@ public class VillagerRoller extends Module {
                 currentState = State.RollingWaitingForVillagerProfessionClear;
             } else {
                 if (!BlockUtils.breakBlock(rollingBlockPos, true)) {
-                    info("Can not break block");
+                    info("不能破块");
                     toggle();
                 }
             }
@@ -492,7 +492,7 @@ public class VillagerRoller extends Module {
         } else if (currentState == State.RollingPlacingBlock) {
             FindItemResult item = InvUtils.findInHotbar(rollingBlock.asItem());
             if (!BlockUtils.place(rollingBlockPos, item, headRotateOnPlace.get(), 5)) {
-                info("Failed to place block, please place it manually");
+                info("放置方块失败，请手动放置");
             } else {
                 currentState = State.RollingWaitingForVillagerProfessionNew;
             }
