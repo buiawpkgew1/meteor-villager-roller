@@ -52,7 +52,7 @@ import static net.minecraft.sound.SoundEvents.BLOCK_AMETHYST_CLUSTER_BREAK;
 
 public class VillagerRoller extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
-    private final SettingGroup sgSound = settings.createGroup("Sound");
+    private final SettingGroup sgSound = settings.createGroup("声音");
 
     private final Setting<Boolean> disableIfFound = sgGeneral.add(new BoolSetting.Builder()
             .name("发现时禁用")
