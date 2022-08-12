@@ -1,4 +1,4 @@
-name: devbuild
+name: 开发构建
 on:
   - push
 jobs:
