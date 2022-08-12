@@ -17,12 +17,12 @@ jobs:
           chmod +x ./gradlew
           ./gradlew build
 
-     - name: 自动释放1
-       uses: marvinpinto/action-automatic-releases@v1.2.1
-       with:
-         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-         automatic_release_tag: "latest"
-         prerelease: true
-         title: 开发建设
-         files: |
-          ./build/libs/*.jar
+      - name: 自动释放1
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: 开发建设
+          files: |
+            ./build/libs/*.jar
