@@ -17,7 +17,7 @@ class VillagerInteractMixin {
         if (VillagerRoller.currentState == VillagerRoller.State.WaitingForTargetVillager) {
             VillagerRoller.currentState = VillagerRoller.State.RollingBreakingBlock;
             roller.rollingVillager = (VillagerEntity) (Object) this;
-            roller.info("我们找到了你的村民");
+            roller.info("We got your villager");
             cir.setReturnValue(ActionResult.CONSUME);
             cir.cancel();
         }
